@@ -56,3 +56,36 @@ note that using form with equal sign doesn't need additional quoting of Jinja2. 
 
 Now we can analize simple playbook:
 
+```yaml
+- hosts: all
+  vars:
+    packages:
+    - vim
+    - curl
+  tasks:
+    apt:
+      name: "{{ packages }}"
+      state: present
+    
+- hosts: web
+  vars:
+    web_packages:
+    - apache2
+    - php
+  tasks:
+    apt:
+      name: "{{ packages }}"
+      state: present
+```
+
+From already mentioned information we can read above playbook as:
+* list of plays (like acts in drama)
+* every play is dictionary having following possible keys:
+  * **hosts**: list of hosts in scope of this play (**mandatory**)
+  * **tasks**:  list of tasks to be executed on hosts (optional)
+  * **vars**: dictionary of variables defined in scope of this play. This is not best way of defining variables! (optional)
+  * **roles**: list of roles to be executed on hosts. Role is kind of grouped together tasks in Ansible. (optional)
+  * **pre_tasks**, **post_tasks**: lists of tasks to be executed before or after roles. (optional)
+* every task is dictionary describing what should be done.
+  
+  

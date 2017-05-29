@@ -106,6 +106,8 @@ From already mentioned information we can read above playbook as:
 Even more important than having a playbook is having an inventory. In simpliest approach inventory is INI file containing definitions of hosts we can connect to.
 
 ```ini
+# contents of inventory.ini
+
 [web]
 web1 ansible_host=10.0.0.11
 web2 ansible_host=10.0.0.12
@@ -123,6 +125,18 @@ In above example stanza *[web]* defines group of hosts, while *[web:vars]* assig
 
 All variables defined in inventory are available in host scope.
 [documentation](http://docs.ansible.com/ansible/intro_inventory.html)
+
+If there is a lot of (default) values for variables they can be put into separate files in special directories: *group_vars/groupname* and *host_vars/hostname*. Those two directories are expected to be at same path as inventory itself. Files with group/host variables are YAML without extension, top level variables are members of dict at top-level of YAML file:
+
+```yaml
+# content of group_vars/web
+
+web_port: 80
+web_port_ssl: 443
+web_vhosts:
+- www.example.com
+- example.io
+```
 
 ## Parallelism
 Ansible code is executed parallel out of the box. Default number of hosts executed at the same time is equal to number of CPUs in controller. This can be tuned both on configuration and play level (**serial** play parameter). Play is executed parallel task-by-task which means one task must be completed on all hosts before entering next. Also all variables available are **local to host context**. This means if there are eg. two hosts in play and both hosts modify variable it's not visible directly to each other, there is special way for this kind of access *hostvars['hostname']['variable_name']*. This can lead to common mistakes:

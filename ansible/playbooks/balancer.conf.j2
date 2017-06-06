@@ -6,5 +6,5 @@
   {% endfor %}
 </Proxy>
 
-#ProxyPass "/test" "balancer://{{ cluster_name }}"
-#ProxyPassReverse "/test" "balancer://{{ cluster_name }}"
+#ProxyPass "/test" "balancer://mycluster"
+#ProxyPassReverse "/test" "balancer://mycluster"

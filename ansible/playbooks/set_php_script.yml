@@ -2,14 +2,17 @@
 
 - hosts: all
   tasks:
+# install mod_php for Apache from .deb file (not installed in image!)
   - name: install mod_php7.0
     command: dpkg -i /vagrant_data/libapache2-mod-php7.0_7.0.15-0ubuntu0.16.04.4_amd64.deb
     become: yes
     register: install_mod_php
     changed_when:  install_mod_php.stdout | search('Selecting previously unselected package')
 
+# feel free to uncommet to see what is registered by command module
 #  - debug: var=install_mod_php
 
+# we want to restart apache only if package was actually installed
   - name: restart Apache
     service:
       name: apache2
@@ -17,12 +20,14 @@
     become: yes
     when: install_mod_php.stdout | search('Selecting previously unselected package') 
 
+# delete index.html from DocumentRoot
   - name: remove index.html
     file:
       dest: /var/www/html/index.html
       state: absent
     become: yes
 
+# Use index.php.j2 as a template for new index file
   - name: copy index.php
     template:
       src: index.php.j2

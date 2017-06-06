@@ -4,4 +4,6 @@ echo "This is index.php<br/>";
 echo "Done by {{ ansible_managed }}<br/>";
 echo "{{ inventory_hostname }}";
 
+echo "<br/><br/>{{ custom_message | default('') }}"
+
 ?>

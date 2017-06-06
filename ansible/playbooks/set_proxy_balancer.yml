@@ -1,13 +1,18 @@
 ---
 
+# we need all hosts in scope of this playbook to be able to reach to other hosts
+# try running same playbook without this play!
 - hosts: all
 
+# we want to modify only controller host
 - hosts: controllers
   tasks:
+# we define some variables (can be overwritten by -e 'cluster_name=myname' from commandline)
   - name: set cluster_name
     set_fact:
       cluster_name: ansible-cluster
 
+# FIRST we need to enable proxy-related modules (apache2_module has bug! - it uses apache2ctl to test config, so module must be enabled prior to configuring it)
   - name: enable mod_proxy
     apache2_module:
       name: "{{ item }}"
@@ -19,12 +24,14 @@
     - proxy_http
     - lbmethod_byrequests
 
+# we create balancer.conf using template (check loop inside, try to play with variables in it)
   - name: copy balancer.conf
     template:
       src: balancer.conf.j2
       dest: /etc/apache2/conf-available/balancer.conf
     become: yes
 
+# Let's enable our configuration
   - name: enable configuration
     command: a2enconf balancer
     become: yes
@@ -32,6 +39,7 @@
 
 #  - debug: var=enable_configuration
 
+# we need to add proxy configuration in default vhost
   - name: modify default vhost
     lineinfile:
       path: /etc/apache2/sites-available/000-default.conf
@@ -45,6 +53,7 @@
 
 #  - debug: var=enable_vhost
 
+# Reload apache after all
   - name: reload apache2
     service:
       name: apache2
@@ -52,6 +61,7 @@
     become: yes
     when: enable_configuration.stdout | search('you need to run') or enable_vhost.results | selectattr('changed', istrue)
 
+# from now http://localhost/test should be using balancer
   - name: check if works
     uri:
       url: http://{{ inventory_hostname }}/test

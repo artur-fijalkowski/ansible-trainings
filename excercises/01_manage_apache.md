@@ -45,11 +45,11 @@ Following command can be used:
 
 * `ansible-playbook -i inventory.ini playbooks/set_proxy_balancer.yml`
 
-If this playbook completes successhully following URL should be load-balancer: [test] (http://localhost/test)
+If this playbook completes successhully following URL should be load-balancer: [test](http://localhost:8080/test)
 
 ## re-writing proxy playbook into role
 
-Roles allow better organization of roles.
+Roles allow better organization of tasks.
 
 This excercise is to convert playbook into role using following information:
 
@@ -57,3 +57,10 @@ This excercise is to convert playbook into role using following information:
 * `roles/apache_proxy/defaults/main.yml` should contain default values for variables
 * `roles/apache_proxy/tasks/main.yml` should be file with tasks
 * `roles/apache_proxy/templates/` is directory for templates to use
+
+Roles are usefull way of isolation, reuse and sharing of Ansible code.
+Improvements over *plain* playbooks:
+* Modules for file manipulation (copy, template, etc.) use relative to role paths for files.
+* Handlers support - tasks can *notify* handlers if should be executed
+* Default variables values can be stored within role.
+* Easy inclusion of roles in playbooks.

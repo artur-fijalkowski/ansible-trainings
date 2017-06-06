@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+<Proxy "balancer://{{ cluster_name }}">
+  {% for host in groups['nodes'] %}
+    BalancerMember "http://{{ hostvars[host].inventory_hostname }}:80"
+  {% endfor %}
+</Proxy>
+
+#ProxyPass "/test" "balancer://mycluster"
+#ProxyPassReverse "/test" "balancer://mycluster"

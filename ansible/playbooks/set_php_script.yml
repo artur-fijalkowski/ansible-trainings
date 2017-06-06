@@ -1,0 +1,33 @@
+---
+
+- hosts: all
+  tasks:
+  - name: install mod_php7.0
+    command: dpkg -i /vagrant_data/libapache2-mod-php7.0_7.0.15-0ubuntu0.16.04.4_amd64.deb
+    become: yes
+    register: install_mod_php
+    changed_when:  install_mod_php.stdout | search('Selecting previously unselected package')
+
+#  - debug: var=install_mod_php
+
+  - name: restart Apache
+    service:
+      name: apache2
+      state: restarted
+    become: yes
+    when: install_mod_php.stdout | search('Selecting previously unselected package') 
+
+  - name: remove index.html
+    file:
+      dest: /var/www/html/index.html
+      state: absent
+    become: yes
+
+  - name: copy index.php
+    template:
+      src: index.php.j2
+      dest: /var/www/html/index.php
+      owner: www-data
+      group: www-data
+      mode: "0640"
+    become: yes

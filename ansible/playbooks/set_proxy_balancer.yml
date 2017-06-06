@@ -1,0 +1,57 @@
+---
+
+- hosts: all
+
+- hosts: controllers
+  tasks:
+  - name: set cluster_name
+    set_fact:
+      cluster_name: ansible-cluster
+
+  - name: enable mod_proxy
+    apache2_module:
+      name: "{{ item }}"
+      state: present
+    become: yes
+    with_items:
+    - proxy
+    - proxy_balancer
+    - proxy_http
+    - lbmethod_byrequests
+
+  - name: copy balancer.conf
+    template:
+      src: balancer.conf.j2
+      dest: /etc/apache2/conf-available/balancer.conf
+    become: yes
+
+  - name: enable configuration
+    command: a2enconf balancer
+    become: yes
+    register: enable_configuration
+
+#  - debug: var=enable_configuration
+
+  - name: modify default vhost
+    lineinfile:
+      path: /etc/apache2/sites-available/000-default.conf
+      insertafter: DocumentRoot
+      line: "{{ item }}"
+    with_items:
+    - ProxyPass "/test" "balancer://{{ cluster_name }}"
+    - ProxyPassReverse "/test" "balancer://{{ cluster_name }}"
+    become: yes
+    register: enable_vhost
+
+#  - debug: var=enable_vhost
+
+  - name: reload apache2
+    service:
+      name: apache2
+      state: reloaded
+    become: yes
+    when: enable_configuration.stdout | search('you need to run') or enable_vhost.results | selectattr('changed', istrue)
+
+  - name: check if works
+    uri:
+      url: http://{{ inventory_hostname }}/test

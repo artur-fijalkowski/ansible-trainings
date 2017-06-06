@@ -45,7 +45,7 @@ Following command can be used:
 
 * `ansible-playbook -i inventory.ini playbooks/set_proxy_balancer.yml`
 
-If this playbook completes successhully following URL should be load-balancer: (test) [http://localhost/test]
+If this playbook completes successhully following URL should be load-balancer: [test] (http://localhost/test)
 
 ## re-writing proxy playbook into role
 
@@ -53,7 +53,7 @@ Roles allow better organization of roles.
 
 This excercise is to convert playbook into role using following information:
 
-* `roles/apache_proxy/handlers/main.yml` should be handler file (we wan't to restart apache **only** when needed)
+* `roles/apache_proxy/handlers/main.yml` should be handler file (we want to restart apache **only** when needed)
 * `roles/apache_proxy/defaults/main.yml` should contain default values for variables
 * `roles/apache_proxy/tasks/main.yml` should be file with tasks
 * `roles/apache_proxy/templates/` is directory for templates to use

@@ -106,6 +106,8 @@ There are multiple limitations in Ansible that come directly from YAML syntax. M
 * only one module can be called in one task (module name is key of dictionary).
 * only one set of parameters can be passed to module in task (can be mitigated by with_\* loops).
 * modules like *set_fact* process variables in ''random'' order (one variable cannot depend on another variable defined in same set_fact).
+* no easy loop nesting (doable with Ansible 2.2 and includes).
+* no easy if-then-else nesting.
 * processing of registered variable from looped module can be challenging.
 * Jinja2 code in when clause can be really complex.
 

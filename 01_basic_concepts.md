@@ -100,7 +100,15 @@ From already mentioned information we can read above playbook as:
   * **delegate_to**: execute task on different host then current actor. (optional)
   * many-many more
 * every module has it's own list of parameters supported. Some parameters are mandatory and some are optional (in most cases they have default value which is most commonly used).
-  
+
+## Syntax limitations
+There are multiple limitations in Ansible that come directly from YAML syntax. Most important thing is that **task is decribed by dictionary**. This implicates multiple things:
+* only one module can be called in one task (module name is key of dictionary).
+* only one set of parameters can be passed to module in task (can be mitigated by with_\* loops).
+* modules like *set_fact* process variables in ''random'' order (one variable cannot depend on another variable defined in same set_fact).
+* processing of registered variable from looped module can be challenging.
+* Jinja2 code in when clause can be really complex.
+
 ## Inventory
 
 Even more important than having a playbook is having an inventory. In simpliest approach inventory is INI file containing definitions of hosts we can connect to.

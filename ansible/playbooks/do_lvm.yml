@@ -1,0 +1,50 @@
+---
+
+- hosts: node-*
+  vars:
+    vg_name: ASN1
+    lv_name: var_tmp
+    fstype: ext3
+    mountname: /var/tmp
+  tasks:
+  - name: create vg
+    lvg:
+      vg: "{{ vg_name }}"
+      pvs: /dev/sdb
+      state: present
+    become:  yes
+
+  - name: create lv
+    lvol:
+      lv: "{{ lv_name }}"
+      vg: "{{ vg_name }}"
+      size: 100%VG
+      state: present
+    become: yes
+
+  - name: create FS
+    filesystem:
+      fstype: "{{ fstype }}"
+      dev: "/dev/mapper/{{ vg_name }}-{{ lv_name }}"
+    become: yes
+
+  - name:
+    file:
+      path: "{{ mountname }}"
+      state: directory
+      mode: "0777"
+    become: yes
+
+  - name: mount and add to fstab
+    mount:
+      fstype: "{{ fstype }}"
+      src: "/dev/mapper/{{ vg_name }}-{{ lv_name }}"
+      path: "{{ mountname }}"
+      opts: rw,noexec,nodev
+      state: mounted
+    become: yes
+
+  - name: create file on new disk
+    file:
+      path: "{{ mountname }}/test.txt"
+      state: touch

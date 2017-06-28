@@ -25,3 +25,6 @@
 When connecting for the first time ssh will ask you to confirm host key when connecting via Ansible.
 3. Try restarting apache2 service on node-2 using ansible
   * `ansible -i inventory.ini -m command -a 'service apache2 restart' -b node-2.ansible.local`
+
+4. Install sshpass on controller (`dpkg -i /vagrant_data/sshpass_1.05-1_amd64.deb`) and re-run some of above using password (-k switch).
+5. Run setup module from command line both with and without became (`ansible -i inventory.ini -m setup -b`). Try spotting the difference.

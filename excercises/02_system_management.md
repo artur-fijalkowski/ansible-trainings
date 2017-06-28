@@ -15,5 +15,5 @@ Run following command
 ## Creating new user with groups and password
 
 Do yourself a playbook using following modules:
-* `group` - [http://docs.ansible.com/ansible/group_module.html](groups management)
-* `user` - [http://docs.ansible.com/ansible/user_module.html](users management)
+* `group` - [groups management](http://docs.ansible.com/ansible/group_module.html)
+* `user` - [users management](http://docs.ansible.com/ansible/user_module.html)
